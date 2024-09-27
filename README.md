@@ -11,7 +11,9 @@ An interactive piano keyboard for React. Supports custom sounds, touch/click/key
 ## Installing
 
 ```
-yarn add react-piano
+npm install react-piano
+
+# pnpm add react-piano
 ```
 
 Alternatively, you can download the UMD build from [unpkg](https://unpkg.com/react-piano).
