@@ -119,7 +119,7 @@ Please note that the default `children` is the result of `renderNoteLabel`.
 
 ## Customizing styles
 
-You can customize many aspects of the piano using CSS. In javascript, you can override the base styles by creating your own set of overrides:
+You can customize the look and feel of the piano by overriding CSS variables. In your own CSS file, you can override the base styles by creating your own set of overrides:
 
 ```javascript
 import 'react-piano/dist/styles.css';
@@ -129,18 +129,30 @@ import './customPianoStyles.css'; // import a set of overrides
 In the CSS file you can do things like:
 
 ```css
-.ReactPiano__Key--active {
-  background: #f00; /* Change the default active key color to bright red */
+:root {
+  --ReactPiano__Key--active-bg: #f00; /* Change the default active key color to bright red */
+  --ReactPiano__Key--accidental-bg: #000; /* Change accidental keys to be completely black */
 }
 
-.ReactPiano__Key--accidental {
-  background: #000; /* Change accidental keys to be completely black */
-}
 ```
 
+Here are the CSS variables for your customization:
 
+```css
+  --ReactPiano__Key--accidental-bg: #555;
+  --ReactPiano__Key--natural-bg: #f6f5f3;
+  --ReactPiano__Key--natural-border: #888;
+  --ReactPiano__Key--active-bg: #3ac8da;
+  --ReactPiano__Key--disabled-accidental-bg: #ddd;
+  --ReactPiano__Key--disabled-accidental-border: #999;
+  --ReactPiano__Key--disabled-natural-bg: #eee;
+  --ReactPiano__Key--disabled-natural-border: #aaa;
+  --ReactPiano__NoteLabel--accidental-color: #f8e8d5;
+  --ReactPiano__NoteLabel--natural-color: #888;
+  --ReactPiano__NoteLabel--natural-active-color: #f8e8d5;
+```
 
-See [styles.css](/src/styles.css) for more detail on what styles can be customized.
+See the [styles.css](/src/styles.css) for a list of CSS variables that you can override.
 
 ## Upgrading versions
 
