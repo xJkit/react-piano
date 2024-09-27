@@ -87,13 +87,19 @@ You can "record" notes that are played on a `<Piano>` by using `onPlayNoteInput`
 
 ## Customizing Key
 
-Please use the render function prop `renderKey` to get your own key style.
+You can customize the key component by passing a render function to the `renderKey` prop. Pass your own props after spreading the `keyProps` object:
 
 ```javascript
-renderKey={({ KeyComponent, key, keyProps }) => <KeyComponent key={key} {...keyProps} />}
+renderKey={({ KeyComponent, key, keyProps }) => (
+  <KeyComponent
+    key={key}
+    {...keyProps}
+    {/* your own props here */}
+  />
+)}
 ```
 
-Here are the typings of `keyProps` that you can overwrite:
+Here are the types of `keyProps` that you can overwrite:
 
 ```
   naturalKeyWidth: number;
@@ -131,6 +137,8 @@ In the CSS file you can do things like:
   background: #000; /* Change accidental keys to be completely black */
 }
 ```
+
+
 
 See [styles.css](/src/styles.css) for more detail on what styles can be customized.
 
