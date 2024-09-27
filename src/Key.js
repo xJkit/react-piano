@@ -90,6 +90,7 @@ class Key extends React.Component {
           width: ratioToPercentage(
             accidental ? accidentalWidthRatio * naturalKeyWidth : naturalKeyWidth,
           ),
+          pointerEvents: disabled ? 'none' : 'auto',
         }}
         onMouseDown={useTouchEvents ? null : this.onPlayNoteInput}
         onMouseUp={useTouchEvents ? null : this.onStopNoteInput}
@@ -99,7 +100,7 @@ class Key extends React.Component {
         onTouchCancel={useTouchEvents ? this.onStopNoteInput : null}
         onTouchEnd={useTouchEvents ? this.onStopNoteInput : null}
       >
-        <div className="ReactPiano__NoteLabelContainer">{children}</div>
+        <div className="ReactPiano__NoteLabelContainer">{disabled ? null : children}</div>
       </div>
     );
   }

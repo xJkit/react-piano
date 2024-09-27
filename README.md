@@ -63,20 +63,21 @@ react-piano does not implement audio playback of each note, so you have to imple
 
 ## Props
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| `noteRange` | **Required** object | An object with format `{ first: 48, last: 77 }` where first and last are MIDI numbers that correspond to natural notes. You can use `MidiNumbers.NATURAL_MIDI_NUMBERS` to identify whether a number is a natural note or not. |
-| `playNote` | **Required** function | `(midiNumber) => void` function to play a note specified by MIDI number. |
-| `stopNote` | **Required** function | `(midiNumber) => void` function to stop playing a note. |
-| `width` | **Conditionally required** number | Width in pixels of the component. While this is not strictly required, if you omit it, the container around the `<Piano>` will need to have an explicit width and height in order to render correctly. |
-| `activeNotes` | Array of numbers | An array of MIDI numbers, e.g. `[44, 47, 54]`, which allows you to programmatically play notes on the piano. |
-| `keyWidthToHeight` | Number | Ratio of key width to height. Used to specify the dimensions of the piano key. |
-| `renderNoteLabel` | Function | `({ keyboardShortcut, midiNumber, isActive, isAccidental }) => node` function to render a label on piano keys that have keyboard shortcuts |
-| `className` | String | A className to add to the component. |
-| `disabled` | Boolean | Whether to show disabled state. Useful when audio sounds need to be asynchronously loaded. |
-| `keyboardShortcuts` | Array of object | An array of form `[{ key: 'a', midiNumber: 48 }, ...]`, where `key` is a `keyEvent.key` value. You can generate this using `KeyboardShortcuts.create`, or use your own method to generate it. You can omit it if you don't want to use keyboard shortcuts. **Note:** this shouldn't be generated inline in JSX because it can cause problems when diffing for shortcut changes. |
-| `onPlayNoteInput` | Function | `(midiNumber, { prevActiveNotes }) => void` function that fires whenever a play-note event is fired. Can use `prevActiveNotes` to record notes. |
-| `onStopNoteInput` | Function | `(midiNumber, { prevActiveNotes }) => void` function that fires whenever a stop-note event is fired. Can use `prevActiveNotes` to record notes. |
+| Name                | Type                              | Description                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `noteRange`         | **Required** object               | An object with format `{ first: 48, last: 77 }` where first and last are MIDI numbers that correspond to natural notes. You can use `MidiNumbers.NATURAL_MIDI_NUMBERS` to identify whether a number is a natural note or not.                                                                                                                                                   |
+| `playNote`          | **Required** function             | `(midiNumber) => void` function to play a note specified by MIDI number.                                                                                                                                                                                                                                                                                                        |
+| `stopNote`          | **Required** function             | `(midiNumber) => void` function to stop playing a note.                                                                                                                                                                                                                                                                                                                         |
+| `width`             | **Conditionally required** number | Width in pixels of the component. While this is not strictly required, if you omit it, the container around the `<Piano>` will need to have an explicit width and height in order to render correctly.                                                                                                                                                                          |
+| `activeNotes`       | Array of numbers                  | An array of MIDI numbers, e.g. `[44, 47, 54]`, which allows you to programmatically play notes on the piano.                                                                                                                                                                                                                                                                    |
+| `keyWidthToHeight`  | Number                            | Ratio of key width to height. Used to specify the dimensions of the piano key.                                                                                                                                                                                                                                                                                                  |
+| `renderNoteLabel`   | Function                          | `({ keyboardShortcut, midiNumber, isActive, isAccidental }) => node` function to render a label on piano keys that have keyboard shortcuts                                                                                                                                                                                                                                      |
+| `renderKey`         | Function                          | `({ KeyComponent, key, keyProps, midiNumber, isActive, isAccidental }) => node` function to render a customized piano key. Please note that you should manually add key prop to KeyComponent for React working properly.                                                                                                                                                        |
+| `className`         | String                            | A className to add to the component.                                                                                                                                                                                                                                                                                                                                            |
+| `disabled`          | Boolean                           | Whether to show disabled state. Useful when audio sounds need to be asynchronously loaded.                                                                                                                                                                                                                                                                                      |
+| `keyboardShortcuts` | Array of object                   | An array of form `[{ key: 'a', midiNumber: 48 }, ...]`, where `key` is a `keyEvent.key` value. You can generate this using `KeyboardShortcuts.create`, or use your own method to generate it. You can omit it if you don't want to use keyboard shortcuts. **Note:** this shouldn't be generated inline in JSX because it can cause problems when diffing for shortcut changes. |
+| `onPlayNoteInput`   | Function                          | `(midiNumber, { prevActiveNotes }) => void` function that fires whenever a play-note event is fired. Can use `prevActiveNotes` to record notes.                                                                                                                                                                                                                                 |
+| `onStopNoteInput`   | Function                          | `(midiNumber, { prevActiveNotes }) => void` function that fires whenever a stop-note event is fired. Can use `prevActiveNotes` to record notes.                                                                                                                                                                                                                                 |
 
 ## Recording/saving notes
 
@@ -84,24 +85,50 @@ You can "record" notes that are played on a `<Piano>` by using `onPlayNoteInput`
 
 <a href="https://codesandbox.io/s/l4jjvzmp47"><img width="300" src="/demo/public/images/recording-demo.gif" alt="demo of recording" /></a>
 
+## Customizing Key
+
+Please use the render function prop `renderKey` to get your own key style.
+
+```javascript
+renderKey={({ KeyComponent, key, keyProps }) => <KeyComponent key={key} {...keyProps} />}
+```
+
+Here are the typings of `keyProps` that you can overwrite:
+
+```
+  naturalKeyWidth: number;
+  midiNumber: number;
+  noteRange: { first: number; last: number };
+  active: boolean;
+  accidental: boolean;
+  disabled: boolean;
+  onPlayNoteInput: (midiNumber: number) => void;
+  onStopNoteInput: (midiNumber: number) => void;
+  gliss: boolean;
+  useTouchEvents: boolean;
+  children: React.ReactNode;
+```
+
+Please note that the default `children` is the result of `renderNoteLabel`.
+
 ## Customizing styles
 
 You can customize many aspects of the piano using CSS. In javascript, you can override the base styles by creating your own set of overrides:
 
 ```javascript
 import 'react-piano/dist/styles.css';
-import './customPianoStyles.css';  // import a set of overrides
+import './customPianoStyles.css'; // import a set of overrides
 ```
 
 In the CSS file you can do things like:
 
 ```css
 .ReactPiano__Key--active {
-  background: #f00;  /* Change the default active key color to bright red */
+  background: #f00; /* Change the default active key color to bright red */
 }
 
 .ReactPiano__Key--accidental {
-  background: #000;  /* Change accidental keys to be completely black */
+  background: #000; /* Change accidental keys to be completely black */
 }
 ```
 

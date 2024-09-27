@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { cloneElement } from 'react';
 import PropTypes from 'prop-types';
 import range from 'just-range';
 import classNames from 'classnames';
@@ -14,6 +14,7 @@ class Keyboard extends React.Component {
     onStopNoteInput: PropTypes.func.isRequired,
     renderNoteLabel: PropTypes.func.isRequired,
     keyWidthToHeight: PropTypes.number.isRequired,
+    renderKey: PropTypes.func,
     className: PropTypes.string,
     disabled: PropTypes.bool,
     gliss: PropTypes.bool,
@@ -59,40 +60,48 @@ class Keyboard extends React.Component {
     return `${keyWidth / this.props.keyWidthToHeight}px`;
   }
 
-  render() {
+  renderKey = (midiNumber) => {
     const naturalKeyWidth = this.getNaturalKeyWidth();
+    const { isAccidental } = MidiNumbers.getAttributes(midiNumber);
+    const isActive = !this.props.disabled && this.props.activeNotes.includes(midiNumber);
+
+    /**
+     * @type {import("./types.d").KeyProps}
+     */
+    const keyProps = {
+      naturalKeyWidth,
+      midiNumber,
+      noteRange: this.props.noteRange,
+      active: isActive,
+      accidental: isAccidental,
+      disabled: this.props.disabled,
+      onPlayNoteInput: this.props.onPlayNoteInput,
+      onStopNoteInput: this.props.onStopNoteInput,
+      gliss: this.props.gliss,
+      useTouchEvents: this.props.useTouchEvents,
+      children: this.props.renderNoteLabel({
+        isActive,
+        isAccidental,
+        midiNumber,
+      }),
+    };
+    if (this.props.renderKey) {
+      return this.props.renderKey({
+        key: midiNumber,
+        keyProps,
+        KeyComponent: Key,
+      });
+    }
+    return <Key {...keyProps} />;
+  };
+
+  render() {
     return (
       <div
         className={classNames('ReactPiano__Keyboard', this.props.className)}
         style={{ width: this.getWidth(), height: this.getHeight() }}
       >
-        {this.getMidiNumbers().map((midiNumber) => {
-          const { note, isAccidental } = MidiNumbers.getAttributes(midiNumber);
-          const isActive = !this.props.disabled && this.props.activeNotes.includes(midiNumber);
-          return (
-            <Key
-              naturalKeyWidth={naturalKeyWidth}
-              midiNumber={midiNumber}
-              noteRange={this.props.noteRange}
-              active={isActive}
-              accidental={isAccidental}
-              disabled={this.props.disabled}
-              onPlayNoteInput={this.props.onPlayNoteInput}
-              onStopNoteInput={this.props.onStopNoteInput}
-              gliss={this.props.gliss}
-              useTouchEvents={this.props.useTouchEvents}
-              key={midiNumber}
-            >
-              {this.props.disabled
-                ? null
-                : this.props.renderNoteLabel({
-                    isActive,
-                    isAccidental,
-                    midiNumber,
-                  })}
-            </Key>
-          );
-        })}
+        {this.getMidiNumbers().map(this.renderKey)}
       </div>
     );
   }

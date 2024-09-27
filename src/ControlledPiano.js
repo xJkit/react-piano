@@ -13,6 +13,7 @@ class ControlledPiano extends React.Component {
     onPlayNoteInput: PropTypes.func.isRequired,
     onStopNoteInput: PropTypes.func.isRequired,
     renderNoteLabel: PropTypes.func.isRequired,
+    renderKey: PropTypes.func,
     className: PropTypes.string,
     disabled: PropTypes.bool,
     width: PropTypes.number,
@@ -179,6 +180,7 @@ class ControlledPiano extends React.Component {
           gliss={this.state.isMouseDown}
           useTouchEvents={this.state.useTouchEvents}
           renderNoteLabel={this.renderNoteLabel}
+          renderKey={this.props.renderKey}
         />
       </div>
     );
