@@ -92,7 +92,7 @@ class Keyboard extends React.Component {
         KeyComponent: Key,
       });
     }
-    return <Key {...keyProps} />;
+    return <Key key={midiNumber} {...keyProps} />;
   };
 
   render() {
